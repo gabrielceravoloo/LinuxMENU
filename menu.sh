@@ -81,21 +81,21 @@ atualizarBasico()
     echo -e "\n\nExecultando uma Atualização Rapida...\n\n"
 
     # Atualização básica
-    sudo apt update
+    sudo apt-get update
     if [ $? -ne 0 ]; then
         echo -e "\n${cor_vemelha}Erro: Falha ao atualizar lista de pacotes!${cor_padrao}\n"
     fi
 
     # ====
 
-    sudo apt upgrade -y
+    sudo apt-get upgrade -y
     if [ $? -ne 0 ]; then
         echo -e "\n${cor_vemelha}Erro: Falha ao atualizar pacotes!${cor_padrao}\n"
     fi
 
     # ====
 
-    sudo apt autoremove -y
+    sudo apt-get autoremove -y
     if [ $? -ne 0 ]; then
         echo -e "\n${cor_vemelha}Erro: Falha ao remover pacotes desnecessários!${cor_padrao}\n"
     fi
@@ -113,28 +113,28 @@ atualizacaoGeral()
     echo -e "\n\nExecultando uma Atualização Completa...\n\n"
 
     # Atualização completa
-    sudo apt update
+    sudo apt-get update
     if [ $? -ne 0 ]; then
         echo -e "\n${cor_vemelha}Erro: Falha ao atualizar lista de pacotes!${cor_padrao}\n"
     fi
 
     # ====
 
-    sudo apt upgrade -y
+    sudo apt-get upgrade -y
     if [ $? -ne 0 ]; then
         echo -e "\n${cor_vemelha}Erro: Falha ao atualizar pacotes!${cor_padrao}\n"
     fi
 
     # ====
 
-    sudo apt dist-upgrade -y
+    sudo apt-get dist-upgrade -y
     if [ $? -ne 0 ]; then
         echo -e "\n${cor_vemelha}Erro: Falha ao atualizar pacotes com dependências!${cor_padrao}\n"
     fi
 
     # ====
 
-    sudo apt autoremove -y
+    sudo apt-get autoremove -y
     if [ $? -ne 0 ]; then
         echo -e "\n${cor_vemelha}Erro: Falha ao remover pacotes desnecessários!${cor_padrao}\n"
     fi
@@ -196,10 +196,10 @@ instalarSSH()
     case $resposta in
         "s" | "sim") 
             echo -e "\nPreparando pacotes de instalação...\n"
-            sudo apt update -y
+            sudo apt-get update -y
 
             echo -e "\n\nInstalando o serviço SSH...\n\n"
-            sudo apt install openssh-server -y
+            sudo apt-get install openssh-server -y
 
             if [ $? -eq 0 ]; then
                 echo -e "\n${cor_verde}SSH instalado com sucesso!${cor_padrao}\n"
@@ -464,9 +464,9 @@ aliasesScript()
 
     cat << 'EOF' > ~/.my_aliases
 ### Atualizações linux
-alias update-all='sudo apt update && sudo apt upgrade -y && sudo apt dist-upgrade -y && sudo apt autoremove -y'
-alias update='sudo apt update && sudo apt autoremove -y'
-alias update-version='sudo apt upgrade -y && sudo apt autoremove -y'
+alias update-all='sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get dist-upgrade -y && sudo apt-get autoremove -y'
+alias update='sudo apt-get update && sudo apt-get autoremove -y'
+alias update-version='sudo apt-get upgrade -y && sudo apt-get autoremove -y'
 
 ### Atalhos
 alias mkdir='mkdir -pv'
