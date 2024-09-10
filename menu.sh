@@ -156,7 +156,7 @@ verificarSSH()
         # Está em execução?
         if sudo systemctl is-active --quiet ssh; then
             echo -e "${cor_verde}O serviço SSH está instalado e em execução!${cor_padrao}"
-            echo -e "\nDeseja reinstalar o SSH? [ ${cor_amarela}Sim ${cor_padrao}ou ${cor_amarela}Não ${cor_padrao} ]"
+            echo -e "\nDeseja reinstalar o SSH? [ ${cor_amarela}Sim ${cor_padrao}ou ${cor_amarela}Não ${cor_padrao}]"
             read -p ":" reinstall_ssh
             reinstall_ssh=$(echo "$reinstall_ssh" | tr '[:upper:]' '[:lower:]')
             case $reinstall_ssh in
@@ -221,10 +221,34 @@ instalarSSH()
 configurarPortaSSH() 
 {
     echo -e "\nConfigurando a porta SSH...\n"
-    read -p "Digite a porta desejada para SSH: " porta_ssh
-    sudo sed -i "s/#Port 22/Port $porta_ssh/g" /etc/ssh/sshd_config
-    sudo systemctl restart ssh
-    echo -e "\n${cor_verde}Porta SSH configurada para $porta_ssh. Certifique-se de liberar a porta no firewall, se necessário!${cor_padrao}"
+
+    # Solicitar a entrada do usuário
+    read -p "Digite a porta desejada para SSH (1-65535): " porta_ssh
+
+    # Verificar se a entrada é um número válido e está dentro do intervalo permitido
+    if [[ "$porta_ssh" =~ ^[0-9]+$ ]] && [ "$porta_ssh" -ge 1 ] && [ "$porta_ssh" -le 65535 ]; then
+        
+        # Verificar se a porta já está em uso
+        if sudo netstat -tuln | grep -q ":$porta_ssh "; then
+            echo -e "${cor_vermelha}A porta $porta_ssh já está em uso!${cor_padrao}"
+            return 1
+        fi
+
+        # Substituir a porta no arquivo de configuração
+        sudo sed -i "s/^#Port 22/Port $porta_ssh/" /etc/ssh/sshd_config
+
+        # Reiniciar o serviço SSH
+        sudo systemctl restart ssh
+
+        # Capturar o IP da máquina
+        ip=$(hostname -I | awk '{print $1}')
+
+        echo -e "\n${cor_verde}Porta SSH configurada para $porta_ssh. Certifique-se de liberar a porta no firewall, se necessário!${cor_padrao}"
+        echo -e "\nInsira o comando no CMD => ssh root@$ip -p $porta_ssh"
+    else
+        echo -e "${cor_vermelha}Porta inválida. Certifique-se de que a porta esteja entre 1 e 65535 e seja um número inteiro${cor_padrao}"
+        return 1
+    fi
 }
 
 # ======================================================================
